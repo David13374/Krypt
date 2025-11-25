@@ -1,5 +1,6 @@
 package xyz.meowing.krypt.utils.rendering
 
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.world.phys.shapes.VoxelShape
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.LightTexture
@@ -20,7 +21,6 @@ import com.mojang.math.Axis
 import net.minecraft.world.phys.Vec3
 import net.minecraft.world.level.ClipContext
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11
 import tech.thatgravyboat.skyblockapi.utils.extentions.pushPop
 import xyz.meowing.knit.api.KnitClient.client
 import xyz.meowing.knit.api.KnitPlayer.player
@@ -29,18 +29,10 @@ import xyz.meowing.krypt.utils.Utils
 import xyz.meowing.krypt.utils.rendering.layers.KryptRenderLayers
 import java.awt.Color
 import kotlin.math.cos
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.sqrt
 
 object Render3D {
-    private fun getValidLineWidth(width: Float): Float {
-        val range = FloatArray(2)
-        GL11.glGetFloatv(GL11.GL_LINE_WIDTH_RANGE, range)
-        return min(max(width, range[0]), range[1])
-    }
-
     fun drawString(
         text: String,
         pos: Vec3,
@@ -183,8 +175,7 @@ object Render3D {
         val consumers = consumers as MultiBufferSource.BufferSource
         val buffer = consumers.getBuffer(RenderType.lines())
 
-        val validThickness = getValidLineWidth(thickness)
-        GL11.glLineWidth(validThickness)
+        RenderSystem.lineWidth(thickness)
 
         val r = color.red / 255f
         val g = color.green / 255f
