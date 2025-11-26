@@ -5,6 +5,7 @@ import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import xyz.meowing.krypt.annotations.Module
 import xyz.meowing.krypt.api.location.SkyBlockIsland
+import xyz.meowing.krypt.config.ConfigDelegate
 import xyz.meowing.krypt.config.ui.elements.base.ElementType
 import xyz.meowing.krypt.events.core.GuiEvent
 import xyz.meowing.krypt.events.core.LocationEvent
@@ -23,6 +24,8 @@ object BreakerChargeDisplay : Feature(
     private const val NAME = "Breaker Charge Display"
     var renderString = ""
 
+    private val compact by ConfigDelegate<Boolean>("breakerChargeDisplay.compact")
+
     override fun addConfig() {
         ConfigManager
             .addFeature(
@@ -34,10 +37,17 @@ object BreakerChargeDisplay : Feature(
                     ElementType.Switch(false)
                 )
             )
+            .addFeatureOption(
+                "Compact display",
+                ConfigElement(
+                    "breakerChargeDisplay.compact",
+                    ElementType.Switch(true)
+                )
+            )
     }
 
     override fun initialize() {
-        HudManager.register(NAME, "§bCharges: §e20§7/§e20§c⸕", "breakerChargeDisplay")
+        HudManager.register(NAME, "§c⸕§e20", "breakerChargeDisplay")
 
         register<PacketEvent.Received> { event ->
             val packet = event.packet as? ClientboundContainerSetSlotPacket ?: return@register
@@ -55,7 +65,7 @@ object BreakerChargeDisplay : Feature(
                 else -> "§c"
             }
 
-            renderString = "§bCharges: ${colorCode}${first}§7/§a${max}§c⸕"
+            renderString = if (compact) "§c⸕$colorCode$first" else "§bCharges: ${colorCode}${first}§7/§a${max}§c⸕"
         }
 
         register<GuiEvent.Render.HUD> { event ->
