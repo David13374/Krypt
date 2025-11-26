@@ -49,9 +49,11 @@ object KickList : Feature(
             if(event.isActionBar) return@register
             val match = PARTY_JOIN_REGEX.find(event.message.stripped)
             if(match != null) {
-                val name = match.groups["name"]?.value
-                kick(name!!)
-                println(name)
+                match.groups["name"]?.value?.let { name ->
+                    if (kickList.any { it.equals(name, ignoreCase = true) }) {
+                        kick(name)
+                    }
+                }
             }
         }
     }
@@ -61,24 +63,40 @@ object KickList : Feature(
     }
 
     fun addToList(name: String) {
+        if (kickList.any { it.equals(name, ignoreCase = true) }) {
+            KnitChat.modMessage("$name is already on the kick list!")
+            return
+        }
         KnitChat.modMessage("Added $name to the kick list!")
         kickList.add(name)
         save()
     }
 
     fun removeFromList(name: String) {
-        KnitChat.modMessage("Removed $name from the kick list!")
-        kickList.remove(name)
-        save()
+        val removed = kickList.removeIf { it.equals(name, ignoreCase = true) }
+        if (removed) {
+            KnitChat.modMessage("Removed $name from the kick list!")
+            save()
+        } else {
+            KnitChat.modMessage("$name was not on the kick list.")
+        }
     }
 
     fun removeFromList(index: Int) {
-        KnitChat.modMessage("Removed ${kickList[index]} from the kick list!")
-        kickList.removeAt(index)
-        save()
+        if (index in kickList.indices) {
+            val removedName = kickList.removeAt(index)
+            KnitChat.modMessage("Removed $removedName from the kick list!")
+            save()
+        } else {
+            KnitChat.modMessage("Invalid index: $index. The list has ${kickList.size} entries.")
+        }
     }
 
     fun listEntries() {
+        if (kickList.isEmpty()) {
+            KnitChat.modMessage("The kick list is empty.")
+            return
+        }
         KnitChat.modMessage("Current entries: ")
         for(entry in kickList) {
             KnitChat.modMessage(entry)
@@ -86,12 +104,15 @@ object KickList : Feature(
     }
 
     fun save() {
-        val jsonArray = JsonArray()
-        kickList.forEach { entry ->
-            jsonArray.add(entry)
+        val playersArray = config.getAsJsonArray("players")
+
+        while (playersArray.size() > 0) {
+            playersArray.remove(0)
         }
 
-        config.add("players", jsonArray)
+        kickList.forEach { entry ->
+            playersArray.add(entry)
+        }
         kickListJson.forceSave()
     }
 }
