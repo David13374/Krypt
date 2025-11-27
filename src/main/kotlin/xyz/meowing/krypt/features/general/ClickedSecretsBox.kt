@@ -50,11 +50,7 @@ object ClickedSecretsBox : Feature(
             val old = event.old
             roomMap[old] = clickedSecrets
 
-            clickedSecrets = if(roomMap[new] != null) {
-                roomMap[new]!!
-            } else {
-                mutableListOf()
-            }
+            clickedSecrets = roomMap[new] ?: mutableListOf()
         }
         register<RenderEvent.World.Last> { event ->
             for (entry in clickedSecrets) {
@@ -63,7 +59,6 @@ object ClickedSecretsBox : Feature(
         }
         register<DungeonEvent.Secrets.Chest> { event ->
             clickedSecrets.add(event.blockPos)
-            println("${event.blockPos.x}, ${event.blockPos.y}, ${event.blockPos.z}")
         }
         register<DungeonEvent.Secrets.Essence> { event ->
             clickedSecrets.add(event.blockPos)
@@ -71,6 +66,10 @@ object ClickedSecretsBox : Feature(
         register<DungeonEvent.Secrets.Misc> { event ->
             if(event.secretType == DungeonEvent.Secrets.Type.LEVER)
                 clickedSecrets.add(event.blockPos)
+        }
+        register<DungeonEvent.End> {
+            clickedSecrets.clear()
+            roomMap.clear()
         }
     }
 }
