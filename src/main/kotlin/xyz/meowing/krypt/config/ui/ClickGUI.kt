@@ -18,7 +18,7 @@ import java.awt.Color
 
 typealias ConfigData = Map<String, Any>
 
-object ClickGUI : VexelScreen("Zen Config") {
+object ClickGUI : VexelScreen("Krypt Config") {
     private val panels = mutableListOf<Panel>()
 
     private val categoryOrder = listOf(

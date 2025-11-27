@@ -456,20 +456,20 @@ object DungeonMap : Feature(
                     ElementType.ColorPicker(Color(0, 0, 0, 100))
                 )
             )
-            .addFeatureOption(
-                "Boss map",
-                ConfigElement(
-                    "dungeonMap.bossMap",
-                    ElementType.Switch(true)
-                )
-            )
-            .addFeatureOption(
-                "Score map",
-                ConfigElement(
-                    "dungeonMap.scoreMap",
-                    ElementType.Switch(true)
-                )
-            )
+//            .addFeatureOption(
+//                "Boss map",
+//                ConfigElement(
+//                    "dungeonMap.bossMap",
+//                    ElementType.Switch(true)
+//                )
+//            )
+//            .addFeatureOption(
+//                "Score map",
+//                ConfigElement(
+//                    "dungeonMap.scoreMap",
+//                    ElementType.Switch(true)
+//                )
+//            )
     }
 
     override fun initialize() {
@@ -491,10 +491,10 @@ object DungeonMap : Feature(
 
         if (!DungeonAPI.inBoss) {
             MapRenderer.render(context, x, y, scale)
-        } else if (bossMapEnabled && !DungeonAPI.floorCompleted) {
+        }/* else if (bossMapEnabled && !DungeonAPI.floorCompleted) {
             MapRenderer.renderBoss(context, x, y, scale)
         } else if (scoreMapEnabled){
             MapRenderer.renderScore(context, x, y, scale)
-        }
+        }*/
     }
 }

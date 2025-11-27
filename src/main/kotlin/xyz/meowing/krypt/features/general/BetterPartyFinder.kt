@@ -1,6 +1,7 @@
 package xyz.meowing.krypt.features.general
 
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,8 +20,11 @@ import xyz.meowing.krypt.managers.config.ConfigManager
 import xyz.meowing.krypt.utils.NetworkUtils
 import xyz.meowing.krypt.utils.Utils.toLegacyString
 import xyz.meowing.knit.api.KnitChat
+import xyz.meowing.knit.api.command.Commodore
 import xyz.meowing.knit.api.scheduler.TimeScheduler
 import xyz.meowing.knit.api.utils.StringUtils.decodeRoman
+import xyz.meowing.krypt.annotations.Command
+import xyz.meowing.krypt.api.data.StoredFile
 import xyz.meowing.krypt.utils.modMessage
 import java.util.concurrent.ConcurrentHashMap
 
@@ -35,7 +39,8 @@ object BetterPartyFinder : Feature(
     private val showPB by ConfigDelegate<Boolean>("betterPartyFinder.pb")
     private val showMissingClasses by ConfigDelegate<Boolean>("betterPartyFinder.missingClasses")
 
-    private val enableAutoKick by ConfigDelegate<Boolean>("betterPartyFinder.autoKick")
+    private val autoKick by ConfigDelegate<Boolean>("betterPartyFinder.autoKick")
+    private val shitterList by ConfigDelegate<Boolean>("betterPartyFinder.shitterList")
     private val selectedFloor by ConfigDelegate<Int>("betterPartyFinder.selectedFloor")
     private val requiredPB by ConfigDelegate<String>("betterPartyFinder.requiredPB")
     private val requiredSecrets by ConfigDelegate<String>("betterPartyFinder.requiredSecrets")
@@ -59,6 +64,10 @@ object BetterPartyFinder : Feature(
     )
 
     private val gson = Gson()
+
+    private val kickListJson = StoredFile("features/KickList")
+    var config by kickListJson.jsonObject("players")
+    val kickList: MutableList<String> = mutableListOf()
 
     override fun addConfig() {
         ConfigManager
@@ -114,6 +123,13 @@ object BetterPartyFinder : Feature(
                 )
             )
             .addFeatureOption(
+                "Shitter list",
+                ConfigElement(
+                    "betterPartyFinder.shitterList",
+                    ElementType.Switch(false)
+                )
+            )
+            .addFeatureOption(
                 "Selected floor",
                 ConfigElement(
                     "betterPartyFinder.selectedFloor",
@@ -144,6 +160,12 @@ object BetterPartyFinder : Feature(
     }
 
     override fun initialize() {
+        if (!config.has("players")) config.add("players", JsonArray())
+
+        config.get("players").asJsonArray.forEach { element ->
+            kickList.add(element.asString)
+        }
+
         register<ItemTooltipEvent> { event ->
             val lines = event.lines
             if (lines.isEmpty()) return@register
@@ -210,21 +232,87 @@ object BetterPartyFinder : Feature(
         }
 
         register<ChatEvent.Receive> { event ->
-            if (!enableAutoKick || event.isActionBar) return@register
+            if (event.isActionBar) return@register
 
             val match = partyJoinRegex.find(event.message.stripped) ?: return@register
             val username = match.groupValues[1]
 
-            val player = playerCache.getOrPut(username) {
-                PlayerData(username).also { fetchPlayerData(it) }
+            if (autoKick) {
+                val player = playerCache.getOrPut(username) {
+                    PlayerData(username).also { fetchPlayerData(it) }
+                }
+
+                NetworkUtils.scope.launch {
+                    while (player.isLoading) delay(100)
+
+                    checkAndKick(player)
+                }
             }
 
-            NetworkUtils.scope.launch {
-                while (player.isLoading) delay(100)
-
-                checkAndKick(player)
+            if (shitterList) {
+                if (kickList.any { it.equals(username, ignoreCase = true) }) {
+                    kickPlayer("kickList", username, 0, 0)
+                }
             }
         }
+    }
+
+    fun addToList(name: String) {
+        if (kickList.any { it.equals(name, ignoreCase = true) }) {
+            KnitChat.modMessage("$name is already on the kick list!")
+            return
+        }
+
+        KnitChat.modMessage("Added $name to the kick list!")
+        kickList.add(name)
+        save()
+    }
+
+    fun removeFromList(name: String) {
+        val removed = kickList.removeIf { it.equals(name, ignoreCase = true) }
+
+        if (removed) {
+            KnitChat.modMessage("Removed $name from the kick list!")
+            save()
+        } else {
+            KnitChat.modMessage("$name was not on the kick list.")
+        }
+    }
+
+    fun removeFromList(index: Int) {
+        if (index in kickList.indices) {
+            val removedName = kickList.removeAt(index)
+            KnitChat.modMessage("Removed $removedName from the kick list!")
+            save()
+        } else {
+            KnitChat.modMessage("Invalid index: $index. The list has ${kickList.size} entries.")
+        }
+    }
+
+    fun listEntries() {
+        if (kickList.isEmpty()) {
+            KnitChat.modMessage("The kick list is empty.")
+            return
+        }
+
+        KnitChat.modMessage("Current entries: ")
+        for(entry in kickList) {
+            KnitChat.modMessage(entry)
+        }
+    }
+
+    fun save() {
+        val playersArray = config.getAsJsonArray("players")
+
+        while (playersArray.size() > 0) {
+            playersArray.remove(0)
+        }
+
+        kickList.forEach { entry ->
+            playersArray.add(entry)
+        }
+
+        kickListJson.forceSave()
     }
 
     private fun parseFloorInfo(lines: List<String>): Pair<Int, Boolean>? {
@@ -445,6 +533,7 @@ object BetterPartyFinder : Feature(
         val privateMsg = when (type) {
             "pb" -> "§fKicking $name (PB: §e${formatTime(stat)}§f | Req: §e${formatTime(required)}§f)"
             "secrets" -> "§fKicking $name (Secrets: §e$stat§f | Req: §e$required§f)"
+            "kickList" -> "§fKicking $name (on Kick List)"
             else -> "§fKicking $name"
         }
 
@@ -454,6 +543,7 @@ object BetterPartyFinder : Feature(
             val chatMsg = when (type) {
                 "pb" -> "pc [Krypt] Kicking $name (PB: ${formatTime(stat)} | Req: ${formatTime(required)})"
                 "secrets" -> "pc [Krypt] Kicking $name (Secrets: $stat | Req: $required)"
+                "kickList" -> "pc [Krypt] Kicking $name (on Kick List)"
                 else -> "pc [Krypt] Kicking $name"
             }
 
@@ -497,4 +587,31 @@ object BetterPartyFinder : Feature(
     )
 
     private data class FloorPB(val sPlus: Long?)
+}
+
+@Command
+object KickListCommand : Commodore("krypt") {
+    init {
+        literal("kick") {
+            literal("add") {
+                runs { name: String ->
+                    BetterPartyFinder.addToList(name)
+                }
+            }
+            literal("remove") {
+                runs { name: String ->
+                    BetterPartyFinder.removeFromList(name)
+                }
+
+                runs { index: Int ->
+                    BetterPartyFinder.removeFromList(index)
+                }
+            }
+            literal("list") {
+                runs {
+                    BetterPartyFinder.listEntries()
+                }
+            }
+        }
+    }
 }
