@@ -3,6 +3,7 @@ package xyz.meowing.krypt.events
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
@@ -19,6 +20,7 @@ import xyz.meowing.krypt.events.core.ChatEvent
 import xyz.meowing.krypt.events.core.EntityEvent
 import xyz.meowing.krypt.events.core.GameEvent
 import xyz.meowing.krypt.events.core.GuiEvent
+import xyz.meowing.krypt.events.core.ItemTooltipEvent
 import xyz.meowing.krypt.events.core.LocationEvent
 import xyz.meowing.krypt.events.core.PacketEvent
 import xyz.meowing.krypt.events.core.RenderEvent
@@ -84,6 +86,16 @@ object EventBus : EventBus(true) {
 
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
             if (screen != null) post(GuiEvent.Open(screen))
+        }
+
+        ItemTooltipCallback.EVENT.register { stack, context, type, lines ->
+            val tooltipEvent = ItemTooltipEvent(stack, context, type, lines)
+            post(tooltipEvent)
+
+            if (tooltipEvent.lines != lines) {
+                lines.clear()
+                lines.addAll(tooltipEvent.lines)
+            }
         }
     }
 

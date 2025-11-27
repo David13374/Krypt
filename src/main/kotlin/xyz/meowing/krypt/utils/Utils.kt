@@ -1,9 +1,11 @@
 package xyz.meowing.krypt.utils
 
-import net.minecraft.world.phys.Vec3
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import xyz.meowing.knit.api.KnitClient.client
 import java.awt.Color
-import kotlin.math.sqrt
+import java.util.Optional
 
 object Utils {
     inline val partialTicks get() = client.deltaTracker.getGameTimeDeltaPartialTick(true)
@@ -46,5 +48,24 @@ object Utils {
 
     fun Any?.equalsOneOf(vararg things: Any?): Boolean {
         return things.any { this == it }
+    }
+
+    fun Component.toLegacyString(): String {
+        val sb = StringBuilder()
+        this.visit({ style, text ->
+            style.color?.let { color ->
+                ChatFormatting.entries.firstOrNull {
+                    it.color == color.value
+                }?.let { sb.append('§').append(it.char) }
+            }
+            if (style.isBold) sb.append("§l")
+            if (style.isItalic) sb.append("§o")
+            if (style.isUnderlined) sb.append("§n")
+            if (style.isStrikethrough) sb.append("§m")
+            if (style.isObfuscated) sb.append("§k")
+            sb.append(text)
+            Optional.empty<Unit>()
+        }, Style.EMPTY)
+        return sb.toString()
     }
 }

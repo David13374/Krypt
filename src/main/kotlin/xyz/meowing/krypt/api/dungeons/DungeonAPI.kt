@@ -328,6 +328,7 @@ object DungeonAPI {
         EventBus.registerIn<EntityEvent.Death>(SkyBlockIsland.THE_CATACOMBS) { event ->
             if (mimicKilled) return@registerIn
             if (floor?.floorNumber !in listOf(6, 7)) return@registerIn
+            if (inBoss) return@registerIn
 
             val entity = event.entity as? Zombie ?: return@registerIn
             if (!entity.isBaby) return@registerIn
@@ -339,6 +340,7 @@ object DungeonAPI {
         EventBus.registerIn<EntityEvent.Packet.Metadata>(SkyBlockIsland.THE_CATACOMBS) { event ->
             if (mimicKilled) return@registerIn
             if (floor?.floorNumber !in listOf(6, 7)) return@registerIn
+            if (inBoss) return@registerIn
 
             val entity = event.entity as? Zombie ?: return@registerIn
             if (!entity.isBaby) return@registerIn
