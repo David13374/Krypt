@@ -282,7 +282,7 @@ class UpdateGUI : VexelScreen("Krypt Update") {
 
     private fun tryDeleteCurrentFile(modsDir: File, isWindows: Boolean): File? {
         return modsDir.listFiles()?.find {
-            it.isFile && it.name.contains("zen", ignoreCase = true) && it.extension.equals("jar", ignoreCase = true)
+            it.isFile && it.name.contains("krypt", ignoreCase = true) && it.extension.equals("jar", ignoreCase = true)
         }?.let {
             if (!isWindows) {
                 try {
@@ -348,9 +348,9 @@ class UpdateGUI : VexelScreen("Krypt Update") {
         val isWindows = Util.getPlatform() == Util.OS.WINDOWS
         val existingFile = tryDeleteCurrentFile(modsDir, isWindows)
 
-        var fileName = "zen-${mcVersion}-${loader}-${latestVersion}.jar"
+        var fileName = "krypt-${mcVersion}-${loader}-${latestVersion}.jar"
         if (existingFile?.let { it.exists() && it.name.equals(fileName, ignoreCase = isWindows) } == true) {
-            fileName = "zen-${mcVersion}-${loader}-${latestVersion}-1.jar"
+            fileName = "krypt-${mcVersion}-${loader}-${latestVersion}-1.jar"
         }
 
         val outputFile = modsDir.resolve(fileName)

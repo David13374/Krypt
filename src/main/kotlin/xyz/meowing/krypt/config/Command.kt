@@ -6,6 +6,7 @@ import xyz.meowing.knit.api.command.Commodore
 import xyz.meowing.knit.api.scheduler.TickScheduler
 import xyz.meowing.krypt.Krypt
 import xyz.meowing.krypt.annotations.Command
+import xyz.meowing.krypt.api.dungeons.DungeonAPI
 import xyz.meowing.krypt.hud.HudEditor
 import xyz.meowing.krypt.managers.config.ConfigManager.configUI
 import xyz.meowing.krypt.managers.config.ConfigManager.openConfig
@@ -33,6 +34,12 @@ object ConfigCommand : Commodore("krypt") {
                 TickScheduler.Client.post {
                     client.execute { client.setScreen(HudEditor()) }
                 }
+            }
+        }
+
+        literal("currentRoom") {
+            runs {
+                Krypt.LOGGER.info(DungeonAPI.currentRoom)
             }
         }
 

@@ -29,7 +29,7 @@ object Krypt : ClientModInitializer {
     val saveData = StoredFile("main/Main")
 
     @JvmStatic
-    val modInfo = KnitModInfo("krypt", "Krypt", "1.0.0")
+    val modInfo = KnitModInfo("krypt", "Krypt", "1.0.1")
 
     override fun onInitializeClient() {
         ConfigManager.createConfigUI()
