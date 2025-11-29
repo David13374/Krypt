@@ -4,7 +4,6 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.resources.ResourceLocation
 import xyz.meowing.krypt.Krypt
 import xyz.meowing.krypt.annotations.Module
-import xyz.meowing.krypt.api.dungeons.DungeonAPI
 import xyz.meowing.krypt.api.location.SkyBlockIsland
 import xyz.meowing.krypt.config.ui.elements.MCColorCode
 import xyz.meowing.krypt.config.ui.elements.base.ElementType

@@ -19,9 +19,15 @@ object MapRenderer {
     fun render(context: GuiGraphics, x: Float, y: Float, scale: Float) {
         context.pushPop {
             val matrix = context.pose()
+            //#if MC >= 1.21.8
+            //$$ matrix.translate(x, y)
+            //$$ matrix.scale(scale, scale)
+            //$$ matrix.translate(5f, 5f)
+            //#else
             matrix.translate(x, y, 0f)
             matrix.scale(scale, scale, 1f)
             matrix.translate(5f, 5f, 0f)
+            //#endif
 
             when {
                 DungeonAPI.floorCompleted && MapRenderConfig.scoreMapEnabled -> renderScore(context)
@@ -35,7 +41,11 @@ object MapRenderer {
     fun renderPreview(context: GuiGraphics, x: Float, y: Float) {
         context.pushPop {
             val matrix = context.pose()
+            //#if MC >= 1.21.8
+            //$$ matrix.translate(x + 5f, y + 5f)
+            //#else
             matrix.translate(x + 5f, y + 5f, 0f)
+            //#endif
 
             renderBackground(context)
             Render2D.drawImage(context, DungeonMap.defaultMap, 5, 5, 128, 128)
@@ -108,8 +118,13 @@ object MapRenderer {
 
         context.pushPop {
             val matrix = context.pose()
+            //#if MC >= 1.21.8
+            //$$ matrix.translate(69f, 135f)
+            //$$ matrix.scale(scale, scale)
+            //#else
             matrix.translate(69f, 135f, 0f)
             matrix.scale(scale, scale, 1f)
+            //#endif
 
             val w1 = line1.width().toFloat()
             val w2 = line2.width().toFloat()
@@ -126,8 +141,13 @@ object MapRenderer {
 
         context.pushPop {
             val matrix = context.pose()
+            //#if MC >= 1.21.8
+            //$$ matrix.translate(69f, 135f)
+            //$$ matrix.scale(scale, scale)
+            //#else
             matrix.translate(69f, 135f, 0f)
             matrix.scale(scale, scale, 1f)
+            //#endif
 
             val w1 = line1.width().toFloat()
             val w2 = line2.width().toFloat()

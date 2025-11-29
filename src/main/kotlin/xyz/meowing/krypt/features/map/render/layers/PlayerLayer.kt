@@ -87,7 +87,11 @@ object PlayerLayer {
     private fun renderNametag(context: GuiGraphics, name: String, x: Float, y: Float) {
         context.pushPop {
             val matrix = context.pose()
+            //#if MC >= 1.21.8
+            //$$ matrix.translate(x, y)
+            //#else
             matrix.translate(x, y, 0f)
+            //#endif
 
             val scale = 1f / 1.3f
             val width = name.width().toFloat()

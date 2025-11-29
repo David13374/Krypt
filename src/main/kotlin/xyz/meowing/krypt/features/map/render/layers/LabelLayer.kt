@@ -64,7 +64,7 @@ object LabelLayer {
             val matrix = context.pose()
             //#if MC >= 1.21.8
             //$$ matrix.translate((centerX * RoomLayer.ROOM_SPACING).toFloat() + RoomLayer.ROOM_RENDER_SIZE / 2, (centerZ * RoomLayer.ROOM_SPACING).toFloat() + RoomLayer.ROOM_RENDER_SIZE / 2)
-            //$$ matrix.scale(scale, scale, 1f)
+            //$$ matrix.scale(scale, scale)
             //#else
             matrix.translate((centerX * RoomLayer.ROOM_SPACING).toFloat() + RoomLayer.ROOM_RENDER_SIZE / 2, (centerZ * RoomLayer.ROOM_SPACING).toFloat() + RoomLayer.ROOM_RENDER_SIZE / 2, 0f)
             matrix.scale(scale, scale, 1f)
@@ -89,7 +89,13 @@ object LabelLayer {
         offsets.forEach { (dx, dy) ->
             context.pushPop {
                 val matrix = context.pose()
+
+                //#if MC >= 1.21.8
+                //$$ matrix.translate(dx, dy)
+                //#else
                 matrix.translate(dx, dy, 0f)
+                //#endif
+
                 Render2D.renderString(context, "§0$text", x.toFloat(), y.toFloat(), 1f)
             }
         }

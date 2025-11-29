@@ -18,17 +18,17 @@ object ScoreMapLayer {
 
     fun render(context: GuiGraphics) {
         val renderState = getCurrentRenderState() ?: return
-        val consumer = KnitClient.client.renderBuffers().bufferSource()
 
         context.pushPop {
             val matrix = context.pose()
-            //#if MC >= 1.21.8
+            //#if MC >= 1.21.7
             //$$ matrix.translate(5f, 5f)
+            //$$ context.submitMapRenderState(renderState)
             //#else
+            val consumer = KnitClient.client.renderBuffers().bufferSource()
             matrix.translate(5f, 5f, 5f)
-            //#endif
-
             KnitClient.client.mapRenderer.render(renderState, matrix, consumer, true, LightTexture.FULL_BRIGHT)
+            //#endif
         }
     }
 
