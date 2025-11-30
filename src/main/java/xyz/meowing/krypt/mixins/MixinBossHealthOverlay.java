@@ -13,7 +13,7 @@ import xyz.meowing.krypt.events.core.RenderEvent;
 @Mixin(BossHealthOverlay.class)
 public abstract class MixinBossHealthOverlay {
     @Inject(method = "drawBar(Lnet/minecraft/client/gui/GuiGraphics;IILnet/minecraft/world/BossEvent;)V", at = @At("HEAD"), cancellable = true)
-    private void onRenderBossBar(GuiGraphics guiGraphics, int i, int j, BossEvent bossEvent, CallbackInfo ci) {
+    private void krypt$onRenderBossBar(GuiGraphics guiGraphics, int i, int j, BossEvent bossEvent, CallbackInfo ci) {
         if (EventBus.INSTANCE.post(new RenderEvent.BossBar(bossEvent))) ci.cancel();
     }
 }

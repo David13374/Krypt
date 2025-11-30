@@ -27,7 +27,7 @@ public class MixinEntity implements EntityAccessor {
     private boolean krypt$glowingThisFrame = false;
 
     @Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
-    public void getTeamColor(CallbackInfoReturnable<Integer> cir) {
+    public void krypt$getTeamColor(CallbackInfoReturnable<Integer> cir) {
         if (hasCustomGlow()) {
             cir.setReturnValue(krypt$glowingColor);
             this.krypt$glowingThisFrame = false;
@@ -38,7 +38,7 @@ public class MixinEntity implements EntityAccessor {
     }
 
     @Inject(method = "isCurrentlyGlowing", at = @At("HEAD"), cancellable = true)
-    public void isGlowing(CallbackInfoReturnable<Boolean> cir) {
+    public void krypt$isGlowing(CallbackInfoReturnable<Boolean> cir) {
         if (hasCustomGlow()) {
             cir.setReturnValue(true);
         }

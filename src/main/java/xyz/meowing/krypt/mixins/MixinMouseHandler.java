@@ -25,9 +25,9 @@ public class MixinMouseHandler {
             cancellable = true
     )
     //#if MC >= 1.21.9
-    //$$ private void zen$onMouseButton(long window, MouseButtonInfo input, int action, CallbackInfo ci) {
+    //$$ private void krypt$onMouseButton(long window, MouseButtonInfo input, int action, CallbackInfo ci) {
     //#else
-    private void zen$onMouseButton(
+    private void krypt$onMouseButton(
             long window,
             int button,
             int action,
@@ -57,7 +57,7 @@ public class MixinMouseHandler {
             method = "onMove",
             at = @At("HEAD")
     )
-    private void zen$onMouseMove(
+    private void krypt$onMouseMove(
             long l,
             double d,
             double e,
@@ -70,7 +70,7 @@ public class MixinMouseHandler {
             method = "onScroll",
             at = @At("HEAD")
     )
-    private void zen$onMouseScroll(
+    private void krypt$onMouseScroll(
             long l,
             double d,
             double e,

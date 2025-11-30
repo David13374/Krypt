@@ -17,7 +17,7 @@ public abstract class MixinLevelChunk {
     public abstract BlockState getBlockState(BlockPos pos);
 
     @Inject(method = "setBlockState", at = @At("HEAD"))
-    private void onBlockChange(BlockPos pos, BlockState state, int flags, CallbackInfoReturnable<BlockState> cir) {
+    private void krypt$onBlockChange(BlockPos pos, BlockState state, int flags, CallbackInfoReturnable<BlockState> cir) {
         BlockState old = this.getBlockState(pos);
         if (old != state) EventBus.INSTANCE.post(new WorldEvent.BlockUpdate(pos, old, state));
     }
