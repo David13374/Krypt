@@ -19,12 +19,12 @@ object CheckmarkLayer {
 
     private fun renderDiscoveredRoomMarkers(context: GuiGraphics) {
         DungeonAPI.discoveredRooms.values.forEach { room ->
-            val x = room.x * RoomLayer.ROOM_SPACING + RoomLayer.ROOM_RENDER_SIZE / 2 - 5
-            val y = room.z * RoomLayer.ROOM_SPACING + RoomLayer.ROOM_RENDER_SIZE / 2 - 6
+            val x = room.x * RoomLayer.ROOM_SPACING + RoomLayer.ROOM_RENDER_SIZE / 2
+            val y = room.z * RoomLayer.ROOM_SPACING + RoomLayer.ROOM_RENDER_SIZE / 2
 
             context.pushPop {
                 translateAndScale(context, x.toFloat(), y.toFloat(), MapRenderConfig.checkmarkScale.toFloat())
-                Render2D.drawImage(context, Checkmark.questionMark, 0, 0, 10, 12)
+                Render2D.drawImage(context, Checkmark.questionMark, -5, -6, 10, 12)
             }
         }
     }
@@ -34,9 +34,8 @@ object CheckmarkLayer {
             if (!room.explored) return@forEach
 
             val (centerX, centerZ) = RoomLayer.getRoomCenter(room)
-            val x = (centerX * RoomLayer.ROOM_SPACING).toInt() + RoomLayer.ROOM_RENDER_SIZE / 2 - 6
-            val y = (centerZ * RoomLayer.ROOM_SPACING).toInt() + RoomLayer.ROOM_RENDER_SIZE / 2 - 6
-
+            val x = (centerX * RoomLayer.ROOM_SPACING).toInt() + RoomLayer.ROOM_RENDER_SIZE / 2
+            val y = (centerZ * RoomLayer.ROOM_SPACING).toInt() + RoomLayer.ROOM_RENDER_SIZE / 2
             val showCleared = MapRenderConfig.showClearedRoomCheckmarks && room.checkmark != Checkmark.UNEXPLORED
             val isPuzzle = room.type == RoomType.PUZZLE
 
@@ -54,7 +53,7 @@ object CheckmarkLayer {
 
             context.pushPop {
                 translateAndScale(context, x.toFloat(), y.toFloat(), scale)
-                Render2D.drawImage(context, checkmark, 0, 0, 12, 12)
+                Render2D.drawImage(context, checkmark, -6, -6, 12, 12)
             }
         }
     }
@@ -63,8 +62,8 @@ object CheckmarkLayer {
         context.pushPop {
             val scale = (MapRenderConfig.puzzleIconScale * MapRenderConfig.checkmarkScale).toFloat()
             translateAndScale(context, x.toFloat(), y.toFloat(), scale)
-            val offset = if (puzzleName == "Teleport Maze") -2 else 0
-            Render2D.drawImage(context, PuzzleType.getPuzzleIcon(puzzleName), 0, offset, 12, 12)
+            val offset = if (puzzleName == "Teleport Maze") -8 else -6
+            Render2D.drawImage(context, PuzzleType.getPuzzleIcon(puzzleName), -6, offset, 12, 12)
         }
     }
 

@@ -33,6 +33,7 @@
         val secretsTextSecretsColor by ConfigDelegate<MCColorCode>("dungeonMap.secretsTextSecretsColor")
         val textShadow by ConfigDelegate<Boolean>("dungeonMap.textShadow")
         val roomLabelScale by ConfigDelegate<Double>("dungeonMap.roomLabelScale")
+        val scaleTextToFitRoom by ConfigDelegate<Boolean>("dungeonMap.scaleTextToFitRoom")
         val renderPuzzleIcons by ConfigDelegate<Boolean>("dungeonMap.renderPuzzleIcons")
         val puzzleIconScale by ConfigDelegate<Double>("dungeonMap.puzzleIconScale")
 

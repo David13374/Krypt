@@ -58,7 +58,8 @@ object LabelLayer {
         }
 
         val (centerX, centerZ) = RoomLayer.getRoomCenter(room)
-        val scale = (0.75f * MapRenderConfig.roomLabelScale).toFloat()
+        val baseScale = (0.75f * MapRenderConfig.roomLabelScale).toFloat()
+        val scale = if (MapRenderConfig.scaleTextToFitRoom) calculateFittedScale(lines, baseScale) else baseScale
 
         context.pushPop {
             val matrix = context.pose()
@@ -81,6 +82,13 @@ object LabelLayer {
                 Render2D.renderString(context, line, drawX, drawY, 1f)
             }
         }
+    }
+
+    private fun calculateFittedScale(lines: List<String>, baseScale: Float): Float {
+        val maxWidth = RoomLayer.ROOM_RENDER_SIZE - 4
+        val maxTextWidth = lines.maxOfOrNull { it.stripColor().width() * baseScale } ?: return baseScale
+
+        return if (maxTextWidth > maxWidth) baseScale * (maxWidth / maxTextWidth) else baseScale
     }
 
     private fun renderTextShadow(context: GuiGraphics, text: String, x: Int, y: Int, scale: Float) {

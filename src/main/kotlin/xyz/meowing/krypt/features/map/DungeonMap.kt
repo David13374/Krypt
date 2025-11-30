@@ -274,6 +274,13 @@ object DungeonMap : Feature(
                 )
             )
             .addFeatureOption(
+                "Scale text to fit room",
+                ConfigElement(
+                    "dungeonMap.scaleTextToFitRoom",
+                    ElementType.Switch(true)
+                )
+            )
+            .addFeatureOption(
                 "Room label scale",
                 ConfigElement(
                     "dungeonMap.roomLabelScale",
