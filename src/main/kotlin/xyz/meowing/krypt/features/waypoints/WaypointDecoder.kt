@@ -4,7 +4,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import xyz.meowing.krypt.Krypt
+import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 import kotlin.io.encoding.Base64
 
 object WaypointDecoder {
@@ -21,6 +23,27 @@ object WaypointDecoder {
             e.printStackTrace()
             Krypt.LOGGER.error("Error importing waypoints: ${e.message}")
             false
+        }
+    }
+
+    fun exportToBase64(): String? {
+        return try {
+            val waypointFile = WaypointFile(WaypointRegistry.getAllWaypoints())
+            val json = gson.toJson(waypointFile)
+            Base64.encode(compress(json))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Krypt.LOGGER.error("Error exporting waypoints: ${e.message}")
+            null
+        }
+    }
+
+    private fun compress(input: String): ByteArray {
+        ByteArrayOutputStream().use { byteArrayOutputStream ->
+            GZIPOutputStream(byteArrayOutputStream).use { gzipOutputStream ->
+                gzipOutputStream.write(input.toByteArray())
+            }
+            return byteArrayOutputStream.toByteArray()
         }
     }
 

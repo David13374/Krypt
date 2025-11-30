@@ -64,6 +64,7 @@ object RouteRecorder {
         currentRoute.clear()
         currentRoomName = null
         WaypointRegistry.reloadFromLocal(notifyUser = false)
+        RoomWaypointHandler.reloadCurrentRoom()
     }
 
     private fun saveToWaypointsFile(roomName: String, overrideExisting: Boolean) {
@@ -117,6 +118,12 @@ object RouteRecorder {
         )
 
         currentRoute.add(waypoint)
+
+        val roomName = currentRoomName ?: return
+        val existingWaypoints = RoomWaypointHandler.getWaypoints(room)?.toMutableList() ?: mutableListOf()
+        existingWaypoints.add(waypoint.toWaypoint(blockPos))
+        RoomWaypointHandler.updateWaypoints(roomName, existingWaypoints)
+
         KnitChat.modMessage("§7Added ${type.name} waypoint (${currentRoute.size} total)")
     }
 
@@ -124,6 +131,7 @@ object RouteRecorder {
         if (!isRecording) return
 
         val room = DungeonAPI.currentRoom ?: return
+        val roomName = currentRoomName ?: return
         val relativePos = room.getRelativeCoord(blockPos)
 
         val closestInCurrent = currentRoute.minByOrNull {
@@ -142,8 +150,6 @@ object RouteRecorder {
                 return
             }
         }
-
-        val roomName = currentRoomName ?: return
 
         val existingData = if (waypointsFile.exists()) {
             try {
@@ -176,6 +182,7 @@ object RouteRecorder {
 
                 waypointsFile.writeText(gson.toJson(updatedData), Charsets.UTF_8)
                 WaypointRegistry.reloadFromLocal(notifyUser = false)
+                RoomWaypointHandler.reloadCurrentRoom()
 
                 KnitChat.modMessage("§cRemoved waypoint from saved file")
             } else {

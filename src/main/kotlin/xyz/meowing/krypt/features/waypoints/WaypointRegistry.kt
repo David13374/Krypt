@@ -47,10 +47,12 @@ object WaypointRegistry {
         waypointMap.clear()
         RoomWaypointHandler.clear()
 
-        if (!notifyUser) return
-        val message = if (loadFromLocal()) "§aSuccessfully reloaded waypoints from local file" else "§cFailed to reload waypoints from local file"
+        val success = loadFromLocal()
 
-        KnitChat.modMessage(message)
+        if (notifyUser) {
+            val message = if (success) "§aSuccessfully reloaded waypoints from local file" else "§cFailed to reload waypoints from local file"
+            KnitChat.modMessage(message)
+        }
     }
 
     fun importWaypoints(data: WaypointFile) {
@@ -58,6 +60,8 @@ object WaypointRegistry {
         saveToLocal(data)
         Krypt.LOGGER.info("WaypointRegistry: Imported waypoints")
     }
+
+    fun getAllWaypoints(): Map<String, List<WaypointData>> = waypointMap
 
     private fun loadWaypointsData(data: WaypointFile) {
         waypointMap.clear()

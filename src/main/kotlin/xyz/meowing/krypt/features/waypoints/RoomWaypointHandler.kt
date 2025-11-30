@@ -30,6 +30,10 @@ object RoomWaypointHandler {
         roomWaypoints.clear()
     }
 
+    fun updateWaypoints(roomName: String, waypoints: MutableList<Waypoint>) {
+        roomWaypoints[roomName] = waypoints
+    }
+
     fun reloadCurrentRoom() {
         val room = DungeonAPI.currentRoom ?: return
         val roomName = room.name ?: return
