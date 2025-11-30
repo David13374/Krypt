@@ -31,6 +31,8 @@ object Krypt : ClientModInitializer {
     @JvmStatic
     val modInfo = KnitModInfo("krypt", "Krypt", "1.0.1")
 
+    var sendModLoaded: Boolean by saveData.boolean("sendModLoaded", true)
+
     override fun onInitializeClient() {
         ConfigManager.createConfigUI()
         FeatureManager.loadFeatures()
@@ -40,11 +42,13 @@ object Krypt : ClientModInitializer {
         EventBus.register<ServerEvent.Connect> {
             if (!showLoad) return@register
 
-            val loadMessage = KnitText
-                .literal("§fMod loaded.")
-                .onHover("§d${FeatureManager.moduleCount} modules §8- §d${FeatureManager.loadTime}ms §8- §d${FeatureManager.commandCount} commands")
+            if (sendModLoaded) {
+                val loadMessage = KnitText
+                    .literal("§fMod loaded.")
+                    .onHover("§d${FeatureManager.moduleCount} modules §8- §d${FeatureManager.loadTime}ms §8- §d${FeatureManager.commandCount} commands")
 
-            KnitChat.modMessage(loadMessage)
+                KnitChat.modMessage(loadMessage)
+            }
 
             TimeScheduler.schedule(10000) {
                 UpdateChecker.check()

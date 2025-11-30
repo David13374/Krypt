@@ -129,8 +129,10 @@ object MapRenderer {
             val w1 = line1.width().toFloat()
             val w2 = line2.width().toFloat()
 
-            Render2D.renderString(context, line1, -w1 / 2f, 0f, 1f)
-            Render2D.renderString(context, line2, -w2 / 2f, 10f, 1f)
+            val style = if (MapRenderConfig.mapInfoShadow) Render2D.TextStyle.DROP_SHADOW else Render2D.TextStyle.DEFAULT
+
+            Render2D.renderString(context, line1, -w1 / 2f, 0f, 1f, textStyle = style)
+            Render2D.renderString(context, line2, -w2 / 2f, 10f, 1f, textStyle = style)
         }
     }
 
@@ -152,8 +154,10 @@ object MapRenderer {
             val w1 = line1.width().toFloat()
             val w2 = line2.width().toFloat()
 
-            Render2D.renderString(context, line1, -w1 / 2f, 0f, 1f)
-            Render2D.renderString(context, line2, -w2 / 2f, 10f, 1f)
+            val style = if (MapRenderConfig.mapInfoShadow) Render2D.TextStyle.DROP_SHADOW else Render2D.TextStyle.DEFAULT
+
+            Render2D.renderString(context, line1, -w1 / 2f, 0f, 1f, textStyle = style)
+            Render2D.renderString(context, line2, -w2 / 2f, 10f, 1f, textStyle = style)
         }
     }
 

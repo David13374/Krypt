@@ -446,6 +446,13 @@ object DungeonMap : Feature(
                 )
             )
             .addFeatureOption(
+                "Info text shadow",
+                ConfigElement(
+                    "dungeonMap.infoTextShadow",
+                    ElementType.Switch(false)
+                )
+            )
+            .addFeatureOption(
                 "Map info scale",
                 ConfigElement(
                     "dungeonMap.mapInfoScale",

@@ -56,6 +56,7 @@
 
         val mapInfoUnder by ConfigDelegate<Boolean>("dungeonMap.mapInfoUnder")
         val mapInfoScale by ConfigDelegate<Double>("dungeonMap.mapInfoScale")
+        val mapInfoShadow by ConfigDelegate<Boolean>("dungeonMap.infoTextShadow")
         val mapBorder by ConfigDelegate<Boolean>("dungeonMap.mapBorder")
         val mapBorderWidth by ConfigDelegate<Int>("dungeonMap.mapBorderWidth")
         val mapBorderColor by ConfigDelegate<Color>("dungeonMap.mapBorderColor")

@@ -43,6 +43,14 @@ object ConfigCommand : Commodore("krypt") {
             }
         }
 
+        literal("modLoaded") {
+            runs {
+                Krypt.sendModLoaded = !Krypt.sendModLoaded
+                KnitChat.fakeMessage("${if (Krypt.sendModLoaded) "§aEnabled" else "§cDisabled"} mod load messages!")
+                Krypt.saveData.forceSave()
+            }
+        }
+
         literal("currentRoom") {
             runs {
                 Krypt.LOGGER.info(DungeonAPI.currentRoom)
