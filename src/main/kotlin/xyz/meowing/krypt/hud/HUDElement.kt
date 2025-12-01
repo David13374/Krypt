@@ -1,6 +1,6 @@
 package xyz.meowing.krypt.hud
 
-import xyz.meowing.krypt.managers.config.ConfigManager
+import xyz.meowing.krypt.config.ConfigDelegate
 
 class HUDElement(
     val id: String,
@@ -12,15 +12,12 @@ class HUDElement(
     var text: String = "",
     var configKey: String? = null
 ) {
+    private val config = configKey ?: ""
+    val enabled by ConfigDelegate<Boolean>(config)
+
     fun isHovered(mouseX: Float, mouseY: Float): Boolean {
         val scaledWidth = width * scale
         val scaledHeight = height * scale
         return mouseX in x..(x + scaledWidth) && mouseY in y..(y + scaledHeight)
-    }
-
-    fun isEnabled(): Boolean {
-        return configKey?.let {
-            ConfigManager.getConfigValue(it) as? Boolean ?: false
-        } ?: true
     }
 }

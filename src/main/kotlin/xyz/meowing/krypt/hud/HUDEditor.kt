@@ -32,7 +32,7 @@ class HUDEditor : KnitScreen("HUD Editor") {
         context.fill(0, 0, width, width, 0x90000000.toInt())
 
         HUDManager.elements.values.forEach { element ->
-            if (!element.isEnabled()) return@forEach
+            if (!element.enabled) return@forEach
 
             //#if MC >= 1.21.7
             //$$ context.pose().pushMatrix()
