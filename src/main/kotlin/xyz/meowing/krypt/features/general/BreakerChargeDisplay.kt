@@ -7,6 +7,9 @@ import net.minecraft.world.level.EmptyBlockGetter
 import net.minecraft.world.phys.shapes.CollisionContext
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.utils.extentions.getRawLore
+import tech.thatgravyboat.skyblockapi.utils.extentions.parseFormattedInt
+import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.anyMatch
 import xyz.meowing.knit.api.KnitClient.client
 import xyz.meowing.knit.api.KnitPlayer
 import xyz.meowing.krypt.annotations.Module
@@ -30,6 +33,7 @@ object BreakerChargeDisplay : Feature(
     island = SkyBlockIsland.THE_CATACOMBS
 ) {
     private const val NAME = "Breaker Charge Display"
+    private val dungeonBreakerRegex = Regex("Charges: (?<current>\\d+)/(?<max>\\d+)⸕")
     private var renderString = ""
     private var charges = 0
 
@@ -96,19 +100,17 @@ object BreakerChargeDisplay : Feature(
 
             if (stack.getData(DataTypes.SKYBLOCK_ID)?.skyblockId?.equals("DUNGEONBREAKER") == false) return@register
 
-            val dbCharges = stack.getData(DataTypes.DUNGEONBREAKER_CHARGES) ?: return@register
-            val first = dbCharges.first
-            val max = dbCharges.second
+            dungeonBreakerRegex.anyMatch(stack.getRawLore(), "current", "max") { (current, max) ->
+                charges = current.parseFormattedInt()
 
-            charges = first
+                val colorCode = when {
+                    charges >= 15 -> "§a"
+                    charges >= 10 -> "§b"
+                    else -> "§c"
+                }
 
-            val colorCode = when {
-                first >= 15 -> "§a"
-                first >= 10 -> "§b"
-                else -> "§c"
+                renderString = if (compact) "§c⸕$colorCode$charges" else "§bCharges: ${colorCode}${charges}§7/§a${max}§c⸕"
             }
-
-            renderString = if (compact) "§c⸕$colorCode$first" else "§bCharges: ${colorCode}${first}§7/§a${max}§c⸕"
         }
 
         register<GuiEvent.Render.HUD> { event ->
@@ -156,7 +158,7 @@ object BreakerChargeDisplay : Feature(
 
         register<LocationEvent.WorldChange> {
             renderString = ""
-            charges = 0
+            charges = 20
         }
     }
 }
