@@ -58,7 +58,7 @@ class WaypointTitleScreen(
         )
     }
     
-    override fun onKeyType(typedChar: Char, keyCode: Int, scanCode: Int) {
+    override fun onKeyType(typedChar: Char, keyCode: Int, scanCode: Int): Boolean {
         when (keyCode) {
             GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> {
                 RouteRecorder.addWaypoint(type, blockPos, textBuffer.toString().takeIf { it.isNotBlank() })
@@ -81,6 +81,8 @@ class WaypointTitleScreen(
                 }
             }
         }
+
+        return super.onKeyType(typedChar, keyCode, scanCode)
     }
     
     override fun isPauseScreen(): Boolean = false

@@ -70,8 +70,9 @@ class WaypointTypeScreen(private val blockPos: BlockPos) : KnitScreen("Select Wa
         )
     }
 
-    override fun onMouseClick(mouseX: Int, mouseY: Int, button: Int) {
-        if (button != 0) return
+    override fun onMouseClick(mouseX: Int, mouseY: Int, button: Int): Boolean {
+        val handled = super.onMouseClick(mouseX, mouseY, button)
+        if (button != 0) return handled
 
         val startY = (height - (types.size * (buttonHeight + spacing))) / 2
 
@@ -84,9 +85,11 @@ class WaypointTypeScreen(private val blockPos: BlockPos) : KnitScreen("Select Wa
                 client.setScreen(WaypointTitleScreen(blockPos, types[selectedIndex]))
             }
         }
+
+        return handled
     }
 
-    override fun onKeyType(typedChar: Char, keyCode: Int, scanCode: Int) {
+    override fun onKeyType(typedChar: Char, keyCode: Int, scanCode: Int): Boolean {
         when (keyCode) {
             GLFW.GLFW_KEY_UP -> {
                 selectedIndex = (selectedIndex - 1).coerceAtLeast(0)
@@ -101,6 +104,8 @@ class WaypointTypeScreen(private val blockPos: BlockPos) : KnitScreen("Select Wa
                 minecraft?.setScreen(null)
             }
         }
+
+        return super.onKeyType(typedChar, keyCode, scanCode)
     }
 
     override fun isPauseScreen(): Boolean = false
