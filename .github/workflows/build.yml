@@ -89,7 +89,7 @@ jobs:
           COMMIT_MESSAGE=$(git log -1 --pretty=%s)
           COMMIT_HASH=$(git rev-parse --short HEAD)
           COMMIT_URL="https://github.com/${{ github.repository }}/commit/${COMMIT_HASH}"
-          NIGHTLY_LINK="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/krypt-fabric-nightly-${COMMIT_NUMBER}.zip"
+          NIGHTLY_LINK="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/krypt-nightly-${COMMIT_NUMBER}.zip"
           
           EMBED_PAYLOAD=$(jq -n \
             --arg title "Krypt nightly release" \
