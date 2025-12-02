@@ -2,6 +2,7 @@ package xyz.meowing.krypt.features.alerts
 
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import xyz.meowing.knit.api.KnitChat
+import xyz.meowing.knit.api.scheduler.TimeScheduler
 import xyz.meowing.krypt.annotations.Module
 import xyz.meowing.krypt.api.dungeons.DungeonAPI
 import xyz.meowing.krypt.api.dungeons.enums.DungeonClass
@@ -153,14 +154,16 @@ object UltimateAlert : Feature(
                 }
 
                 message == "[BOSS] Sadan: My giants! Unleashed!" -> {
-                    Thread.sleep(3000)
-                    if (wishNotify && (!checkClass || playerClass == DungeonClass.HEALER)) {
-                        showTitle("§b${wishNotifyText.getText()}", duration = 2000)
-                        KnitChat.modMessage("§b${wishNotifyText.getText()}")
-                    }
-                    if (ultimateNotify && (!checkClass || playerClass in listOf(DungeonClass.TANK, DungeonClass.ARCHER))) {
-                        showTitle("§b${ultimateNotifyText.getText()}", duration = 2000)
-                        KnitChat.modMessage("§b${ultimateNotifyText.getText()}")
+                    TimeScheduler.schedule(3000) {
+                        if (wishNotify && (!checkClass || playerClass == DungeonClass.HEALER)) {
+                            showTitle("§b${wishNotifyText.getText()}", duration = 2000)
+                            KnitChat.modMessage("§b${wishNotifyText.getText()}")
+                        }
+
+                        if (ultimateNotify && (!checkClass || playerClass in listOf(DungeonClass.TANK, DungeonClass.ARCHER))) {
+                            showTitle("§b${ultimateNotifyText.getText()}", duration = 2000)
+                            KnitChat.modMessage("§b${ultimateNotifyText.getText()}")
+                        }
                     }
                 }
 
