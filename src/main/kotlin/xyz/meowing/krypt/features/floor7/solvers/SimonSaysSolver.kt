@@ -26,7 +26,6 @@ import xyz.meowing.krypt.events.core.WorldEvent
 import xyz.meowing.krypt.features.Feature
 import xyz.meowing.krypt.managers.config.ConfigElement
 import xyz.meowing.krypt.managers.config.ConfigManager
-import xyz.meowing.krypt.utils.LegalIDs.getLegacyId
 import xyz.meowing.krypt.utils.TitleUtils
 import xyz.meowing.krypt.utils.modMessage
 import xyz.meowing.krypt.utils.rendering.Render3D

@@ -14,6 +14,7 @@
         val showOwnPlayer by ConfigDelegate<Boolean>("dungeonMap.showOwnPlayer")
         val showPlayerNametags by ConfigDelegate<Boolean>("dungeonMap.showPlayerNametags")
         val showOnlyOwnHeadAsArrow by ConfigDelegate<Boolean>("dungeonMap.showOnlyOwnHeadAsArrow")
+        val forcePaul by ConfigDelegate<Boolean>("dungeonMap.forcePaul")
 
         val healerColor by ConfigDelegate<Color>("dungeonMap.healerColor")
         val mageColor by ConfigDelegate<Color>("dungeonMap.mageColor")

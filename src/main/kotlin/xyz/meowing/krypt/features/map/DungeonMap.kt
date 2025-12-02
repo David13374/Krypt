@@ -129,6 +129,13 @@ object DungeonMap : Feature(
                     ElementType.Switch(true)
                 )
             )
+            .addFeatureOption(
+                "Force paul",
+                ConfigElement(
+                    "dungeonMap.forcePaul",
+                    ElementType.Switch(false)
+                )
+            )
     }
 
     private fun addClassColorConfig() {

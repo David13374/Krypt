@@ -50,6 +50,7 @@ import xyz.meowing.krypt.events.core.TablistEvent
 import xyz.meowing.krypt.events.core.TickEvent
 import xyz.meowing.krypt.features.alerts.MimicAlert
 import xyz.meowing.krypt.features.alerts.PrinceAlert
+import xyz.meowing.krypt.features.map.render.MapRenderConfig
 import kotlin.collections.first
 import kotlin.collections.isNotEmpty
 import kotlin.math.floor
@@ -175,7 +176,7 @@ object DungeonAPI {
         get() = ownPlayer?.cataLevel ?: 0
 
     val isPaul: Boolean
-        get() = Perk.EZPZ.active
+        get() = MapRenderConfig.forcePaul || Perk.EZPZ.active
 
     data class DiscoveredRoom(val x: Int, val z: Int, val room: Room)
 
