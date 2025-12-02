@@ -32,9 +32,8 @@ object MapRenderer {
             when {
                 DungeonAPI.floorCompleted && MapRenderConfig.scoreMapEnabled -> renderScore(context)
                 DungeonAPI.inBoss && MapRenderConfig.bossMapEnabled -> renderBoss(context)
-                !DungeonAPI.floorCompleted -> renderMain(context)
+                !DungeonAPI.floorCompleted && !DungeonAPI.inBoss -> renderMain(context)
             }
-
         }
     }
 
